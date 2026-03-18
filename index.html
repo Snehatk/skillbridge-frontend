@@ -104,5 +104,10 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script>
+  // Wake up backend when home page loads
+  fetch('https://skillbridge-backend-xvgy.onrender.com/')
+    .catch(() => console.log('Backend waking up...'));
+</script>
 </body>
 </html>
