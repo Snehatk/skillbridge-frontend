@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "https://skillbridge-backend-xvgy.onrender.com";
 
 // ===== JOB ROLES =====
 const jobRoles = {
@@ -45,7 +45,7 @@ const userSkills    = JSON.parse(localStorage.getItem('userSkills'))    || [];
 const missingSkills = JSON.parse(localStorage.getItem('missingSkills')) || [];
 const matchScore    = parseInt(localStorage.getItem('matchScore'))      || 0;
 
-// ===== LOAD USER — check both formats =====
+// ===== LOAD USER =====
 let user = {};
 try {
   user = JSON.parse(localStorage.getItem('user')) || {};
@@ -65,9 +65,7 @@ window.onload = function () {
 
 // ===== WELCOME MESSAGE =====
 function updateWelcome() {
-  // Try name first, then email, then fallback
   const name = user.name || user.email || 'there';
-
   document.getElementById('welcome-msg').textContent =
     `Welcome back, ${name}! 👋`;
 
@@ -147,7 +145,6 @@ function toggleCheck(skill) {
   saved[skill] = chk.checked;
   localStorage.setItem('checkedSkills', JSON.stringify(saved));
 
-  // Save to backend if user is logged in
   if (user.email) {
     fetch(`${API}/save-progress`, {
       method:  'POST',
@@ -196,9 +193,8 @@ function renderRadarChart() {
 
   const role      = jobRoles[selectedRole];
   const userLower = userSkills.map(s => s.toLowerCase());
-
-  const labels = role.skills;
-  const data   = role.skills.map(s =>
+  const labels    = role.skills;
+  const data      = role.skills.map(s =>
     userLower.includes(s.toLowerCase()) ? 1 : 0
   );
 
@@ -211,8 +207,8 @@ function renderRadarChart() {
       datasets: [{
         label: 'Your Skills',
         data:  data,
-        backgroundColor:    'rgba(79, 70, 229, 0.2)',
-        borderColor:        '#4f46e5',
+        backgroundColor:      'rgba(79, 70, 229, 0.2)',
+        borderColor:          '#4f46e5',
         pointBackgroundColor: data.map(d =>
           d === 1 ? '#10b981' : '#ef4444'
         ),
@@ -236,7 +232,7 @@ function renderRadarChart() {
   });
 }
 
-// ===== LOAD ANALYSIS HISTORY FROM BACKEND =====
+// ===== LOAD ANALYSIS HISTORY =====
 async function loadAnalysisHistory() {
   if (!user.email) return;
 
@@ -245,7 +241,6 @@ async function loadAnalysisHistory() {
     const data = await res.json();
 
     if (data.history && data.history.length > 0) {
-      // Update stat score with latest analysis from DB
       const latest = data.history[0];
       document.getElementById('stat-score').textContent = latest.score + '%';
     }

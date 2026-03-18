@@ -1,7 +1,9 @@
+const API = "https://skillbridge-backend-xvgy.onrender.com";
+
 // ===== FETCH CAREER MATCHES FROM BACKEND =====
 async function fetchCareerMatches(skills) {
   try {
-    const res  = await fetch('http://127.0.0.1:5000/career-matches', {
+    const res  = await fetch(`${API}/career-matches`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ skills })
@@ -66,29 +68,21 @@ window.onload = async function () {
 
   const role           = jobRoles[selectedRole];
   const requiredSkills = role.skills;
+  const userLower      = userSkills.map(s => s.toLowerCase());
 
-  // Normalize to lowercase
-  const userLower = userSkills.map(s => s.toLowerCase());
-
-  // Find matched and missing
   const matched = requiredSkills.filter(s => userLower.includes(s.toLowerCase()));
   const missing = requiredSkills.filter(s => !userLower.includes(s.toLowerCase()));
+  const score   = Math.round((matched.length / requiredSkills.length) * 100);
 
-  // Calculate score
-  const score = Math.round((matched.length / requiredSkills.length) * 100);
-
-  // Save for other pages
   localStorage.setItem('missingSkills', JSON.stringify(missing));
   localStorage.setItem('matchScore',    score);
 
-  // ===== UPDATE UI =====
   updateSubtitle(role.name);
   updateScoreCircle(score);
   updateBreakdownBars(matched.length, missing.length, requiredSkills.length);
   renderMatchedSkills(matched);
   renderMissingSkills(missing);
 
-  // ===== CAREER MATCHES: try backend first, fallback to local =====
   const apiMatches = await fetchCareerMatches(userSkills);
   if (apiMatches) {
     renderCareerMatchesFromAPI(apiMatches);

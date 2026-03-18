@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "https://skillbridge-backend-xvgy.onrender.com";
 
 // ===== TAB SWITCHER =====
 function switchTab(tab) {
@@ -29,7 +29,6 @@ async function handleLogin() {
     return;
   }
 
-  // Show loading state
   const btn = document.querySelector('#login-form .btn-primary');
   btn.textContent = '⏳ Logging in...';
   btn.disabled    = true;
@@ -44,7 +43,6 @@ async function handleLogin() {
     const data = await res.json();
 
     if (data.success) {
-      // Save full user object with name
       localStorage.setItem('user', JSON.stringify({
         name:  data.user.name,
         email: data.user.email
@@ -59,7 +57,7 @@ async function handleLogin() {
 
   } catch (err) {
     console.error('Login error:', err);
-    alert('Cannot connect to server. Make sure Python is running!');
+    alert('Cannot connect to server!');
     btn.textContent = 'Login →';
     btn.disabled    = false;
   }
@@ -81,7 +79,6 @@ async function handleSignup() {
     return;
   }
 
-  // Show loading state
   const btn = document.querySelector('#signup-form .btn-primary');
   btn.textContent = '⏳ Creating account...';
   btn.disabled    = true;
@@ -96,7 +93,6 @@ async function handleSignup() {
     const data = await res.json();
 
     if (data.success) {
-      // Save user with name immediately
       localStorage.setItem('user', JSON.stringify({ name, email }));
       showSuccess();
       setTimeout(() => { window.location.href = 'upload.html'; }, 2000);
@@ -108,7 +104,7 @@ async function handleSignup() {
 
   } catch (err) {
     console.error('Signup error:', err);
-    alert('Cannot connect to server. Make sure Python is running!');
+    alert('Cannot connect to server!');
     btn.textContent = 'Create Account →';
     btn.disabled    = false;
   }

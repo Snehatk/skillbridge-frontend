@@ -1,3 +1,5 @@
+const API = "https://skillbridge-backend-xvgy.onrender.com";
+
 // ===== JOB ROLE SKILL DATABASE =====
 const jobRoles = {
   'data-scientist': {
@@ -66,8 +68,6 @@ function showFileSelected(name) {
   document.getElementById('drop-zone').classList.add('hidden');
   document.getElementById('file-selected').classList.remove('hidden');
   document.getElementById('file-name').textContent = name;
-
-  // Save filename for later
   localStorage.setItem('resumeFile', name);
 }
 
@@ -80,8 +80,8 @@ function removeFile() {
 
 // ===== JOB ROLE SELECTION =====
 document.getElementById('job-role').addEventListener('change', function () {
-  const role    = this.value;
-  const preview = document.getElementById('role-preview');
+  const role      = this.value;
+  const preview   = document.getElementById('role-preview');
   const container = document.getElementById('required-skills-preview');
 
   if (!role) {
@@ -89,15 +89,12 @@ document.getElementById('job-role').addEventListener('change', function () {
     return;
   }
 
-  // Show required skills as tags
   const skills = jobRoles[role].skills;
   container.innerHTML = skills
     .map(s => `<span class="tag tag-blue">${s}</span>`)
     .join('');
 
   preview.classList.remove('hidden');
-
-  // Save selected role
   localStorage.setItem('selectedRole', role);
 });
 
@@ -137,13 +134,10 @@ function renderSkillTags() {
                  cursor:pointer;margin-left:6px;font-size:12px;">✕</button>
       </span>`)
     .join('');
-
-  // Save to localStorage
   localStorage.setItem('userSkills', JSON.stringify(userSkills));
 }
 
 // ===== START ANALYSIS =====
-// ===== START ANALYSIS (connected to backend) =====
 async function startAnalysis() {
   const role = document.getElementById('job-role').value;
 
@@ -157,62 +151,5 @@ async function startAnalysis() {
   btn.disabled    = true;
 
   try {
-    // ===== CASE 1: Resume was uploaded =====
-    const resumeInput = document.getElementById('resume-input');
-
-    if (resumeInput.files.length > 0) {
-      const formData = new FormData();
-      formData.append('resume', resumeInput.files[0]);
-
-      // Send resume to backend NLP
-      const res    = await fetch('http://127.0.0.1:5000/upload-resume', {
-        method: 'POST',
-        body:   formData
-      });
-      const data   = await res.json();
-
-      if (data.success) {
-        localStorage.setItem('userSkills', JSON.stringify(data.skills));
-      }
-    }
-
-    // ===== CASE 2: Manual skills entered =====
-    // userSkills array already saved in localStorage by addSkill()
-
-    const skills = JSON.parse(localStorage.getItem('userSkills')) || [];
-
-    if (skills.length === 0) {
-      // Use dummy skills if nothing entered (for testing)
-      const dummy = ['python', 'sql', 'excel', 'html', 'css'];
-      localStorage.setItem('userSkills', JSON.stringify(dummy));
-    }
-
-    // ===== SEND TO ANALYZE ENDPOINT =====
-    const finalSkills = JSON.parse(localStorage.getItem('userSkills'));
-
-    const res2  = await fetch('http://127.0.0.1:5000/analyze', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        skills:   finalSkills,
-        job_role: role
-      })
-    });
-
-    const result = await res2.json();
-
-    // Save results for analysis page
-    localStorage.setItem('matchScore',    result.score);
-    localStorage.setItem('missingSkills', JSON.stringify(result.missing));
-    localStorage.setItem('matchedSkills', JSON.stringify(result.matched));
-    localStorage.setItem('selectedRole',  role);
-
-    // Go to results page
-    window.location.href = 'analysis.html';
-
-  } catch (error) {
-    alert('Could not connect to backend. Make sure Python server is running!');
-    btn.textContent = '🔍 Analyze My Skill Gap';
-    btn.disabled    = false;
-  }
-}
+    // ===== CASE 1: Resume uploaded =====
+    const resumeInput = document.getElementById(
