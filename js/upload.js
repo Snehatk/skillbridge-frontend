@@ -1,3 +1,4 @@
+
 const API = "https://skillbridge-backend-xvgy.onrender.com";
 
 // ===== JOB ROLE SKILL DATABASE =====
@@ -152,4 +153,56 @@ async function startAnalysis() {
 
   try {
     // ===== CASE 1: Resume uploaded =====
-    const resumeInput = document.getElementById(
+    const resumeInput = document.getElementById('resume-input');
+
+    if (resumeInput.files.length > 0) {
+      const formData = new FormData();
+      formData.append('resume', resumeInput.files[0]);
+
+      const res  = await fetch(`${API}/upload-resume`, {
+        method: 'POST',
+        body:   formData
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('userSkills', JSON.stringify(data.skills));
+      }
+    }
+
+    // ===== CASE 2: Manual skills =====
+    const skills = JSON.parse(localStorage.getItem('userSkills')) || [];
+
+    if (skills.length === 0) {
+      const dummy = ['python', 'sql', 'excel', 'html', 'css'];
+      localStorage.setItem('userSkills', JSON.stringify(dummy));
+    }
+
+    // ===== SEND TO ANALYZE =====
+    const finalSkills = JSON.parse(localStorage.getItem('userSkills'));
+
+    const res2   = await fetch(`${API}/analyze`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        skills:   finalSkills,
+        job_role: role
+      })
+    });
+
+    const result = await res2.json();
+
+    localStorage.setItem('matchScore',    result.score);
+    localStorage.setItem('missingSkills', JSON.stringify(result.missing));
+    localStorage.setItem('matchedSkills', JSON.stringify(result.matched));
+    localStorage.setItem('selectedRole',  role);
+
+    window.location.href = 'analysis.html';
+
+  } catch (error) {
+    console.error(error);
+    alert('Could not connect to backend!');
+    btn.textContent = '🔍 Analyze My Skill Gap';
+    btn.disabled    = false;
+  }
+}
