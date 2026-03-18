@@ -148,7 +148,7 @@ async function startAnalysis() {
   }
 
   const btn = document.querySelector('.analyze-btn');
-  btn.textContent = '⏳ Analyzing...';
+  btn.textContent = '⏳ Waking up server... (30s)';
   btn.disabled    = true;
 
   try {
@@ -198,10 +198,9 @@ async function startAnalysis() {
     localStorage.setItem('selectedRole',  role);
 
     window.location.href = 'analysis.html';
-
-  } catch (error) {
+} catch (error) {
     console.error(error);
-    alert('Could not connect to backend!');
+    alert('Server is waking up! Please wait 30 seconds and try again.');
     btn.textContent = '🔍 Analyze My Skill Gap';
     btn.disabled    = false;
   }
