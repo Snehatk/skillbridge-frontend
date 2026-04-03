@@ -1,4 +1,4 @@
-const API = "https://skillbridge-backend-xvgy.onrender.com";
+const API = "https://skillbridge-backend-1-xytc.onrender.com";
 
 // ===== JOB ROLES =====
 const jobRoles = {

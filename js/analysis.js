@@ -1,5 +1,4 @@
-const API = "https://skillbridge-backend-xvgy.onrender.com";
-
+const API = "https://skillbridge-backend-1-xytc.onrender.com";
 // ===== FETCH CAREER MATCHES FROM BACKEND =====
 async function fetchCareerMatches(skills) {
   try {
