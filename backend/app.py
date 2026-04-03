@@ -1,17 +1,15 @@
-from flask import Flask, request, jsonify
+from flask import Flask, app, request, jsonify
 from flask_cors import CORS
 import os
 
 from skill_extractor import extract_skills_from_resume, extract_skills
 from analyzer        import analyze_gap, get_all_career_matches
 from database        import save_user, get_user, save_analysis, get_analysis_history, save_progress
+from flask import Flask
+from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app, resources={r"/*": {
-    "origins": ["http://localhost:5500", "http://127.0.0.1:5500"],
-    "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type"]
-}})
+app = Flask(__name__)  # Line 9 calls CORS(app) — app must be this
+CORS(app)
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
