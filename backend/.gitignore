@@ -1,4 +1,20 @@
-__pycache__/
+✅ Procfile fixed! Now run steps 2, 3, 4, 5, 6 below — one after another.
+Remaining steps — you are in backend/ folder
+2
+Fix backend .gitignore — paste this entire block at once
+Set-Content .gitignore "__pycache__/
 *.pyc
-uploads/*.pdf
-skillbridge.db
+*.pyo
+venv/
+env/
+.venv/
+.env
+*.db
+*.sqlite
+*.sqlite3
+uploads/*
+!uploads/.gitkeep
+.python-version
+*.egg-info/
+dist/
+build/"
